@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 
-const Board = () => <h1>Board</h1>;
+import Board from './pages/Board';
 
 function App() {
   return (
