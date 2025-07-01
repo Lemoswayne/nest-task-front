@@ -1,10 +1,12 @@
 export interface Task {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   boardId: string;
-  order: number;
-  dueDate: Date;
-  completed: boolean;
   status: string;
+  order: number;
+  dueDate?: string;
+  completed: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

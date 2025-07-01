@@ -1,26 +1,67 @@
 import axios from 'axios';
-import { Board } from '../types/Board';
 
 const API_URL = 'http://localhost:3000/boards/';
 
+// Configurar axios para incluir o token de autorização
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
+
 class BoardService {
-  getBoards() {
-    return axios.get<Board[]>(API_URL, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+  async create(title: string, description?: string) {
+    const token = localStorage.getItem('token');
+    const userId = this.getUserIdFromToken(token);
+    
+    return axios.post(
+      API_URL,
+      {
+        title,
+        description,
+        userId,
+      },
+      getAuthHeaders()
+    );
   }
 
-  createBoard(title: string, description: string, userId: string) {
-    return axios.post<Board>(API_URL, { title, description, userId }, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+  async findAll() {
+    return axios.get(API_URL, getAuthHeaders());
   }
 
-  updateBoard(board: Board) {
-    return axios.patch<Board>(`${API_URL}${board.id}`, board, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+  async findOne(id: string) {
+    return axios.get(`${API_URL}${id}`, getAuthHeaders());
   }
 
-  deleteBoard(boardId: string) {
-    return axios.delete(`${API_URL}${boardId}`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } });
+  async update(id: string, title: string, description?: string) {
+    return axios.patch(
+      `${API_URL}${id}`,
+      {
+        title,
+        description,
+      },
+      getAuthHeaders()
+    );
   }
 
-  // Add other board methods here
+  async remove(id: string) {
+    return axios.delete(`${API_URL}${id}`, getAuthHeaders());
+  }
+
+  private getUserIdFromToken(token: string | null): string {
+    if (!token) return '';
+    
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.sub || '';
+    } catch (error) {
+      console.error('Error parsing token:', error);
+      return '';
+    }
+  }
 }
 
 export default new BoardService();

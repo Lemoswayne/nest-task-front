@@ -1,37 +1,59 @@
 import React from 'react';
-import { Draggable } from '@hello-pangea/dnd';
 import { Task as TaskType } from '../types/Task';
 
 interface TaskProps {
   task: TaskType;
-  index: number;
   onEdit: (task: TaskType) => void;
-  onDelete: (taskId: string) => void;
+  onDelete: () => void;
+  onToggleComplete: (completed: boolean) => void;
 }
 
-const Task: React.FC<TaskProps> = ({ task, index, onEdit, onDelete }) => {
+const TaskComponent: React.FC<TaskProps> = ({ task, onEdit, onDelete, onToggleComplete }) => {
   return (
-    <Draggable draggableId={task.id} index={index}>
-      {(provided) => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          className="card mb-2"
-        >
-          <div className="card-body">
-            <h5 className="card-title d-flex justify-content-between">{task.title}
-              <div>
-                <button className="btn btn-sm btn-primary me-2" onClick={() => onEdit(task)}>Edit</button>
-                <button className="btn btn-sm btn-danger" onClick={() => onDelete(task.id)}>Delete</button>
-              </div>
-            </h5>
-            <p className="card-text">{task.description}</p>
+    <div className="card mb-2">
+      <div className="card-body">
+        <div className="d-flex justify-content-between align-items-start">
+          <div className="flex-grow-1">
+            <h6 className="card-title mb-1">
+              <input
+                type="checkbox"
+                className="form-check-input me-2"
+                checked={task.completed}
+                onChange={(e) => onToggleComplete(e.target.checked)}
+              />
+              <span className={task.completed ? 'text-decoration-line-through' : ''}>
+                {task.title}
+              </span>
+            </h6>
+            {task.description && (
+              <p className="card-text small text-muted mb-1">{task.description}</p>
+            )}
+            {task.dueDate && (
+              <small className="text-muted">
+                Vencimento: {new Date(task.dueDate).toLocaleDateString('pt-BR')}
+              </small>
+            )}
+          </div>
+          <div className="btn-group btn-group-sm">
+            <button 
+              className="btn btn-outline-primary btn-sm" 
+              onClick={() => onEdit(task)}
+              title="Editar"
+            >
+              ✏️
+            </button>
+            <button 
+              className="btn btn-outline-danger btn-sm" 
+              onClick={onDelete}
+              title="Excluir"
+            >
+              🗑️
+            </button>
           </div>
         </div>
-      )}
-    </Draggable>
+      </div>
+    </div>
   );
 };
 
-export default Task;
+export default TaskComponent;
