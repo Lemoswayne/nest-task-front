@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'http://localhost:3000/boards/';
+const API_URL = "https://nest-task-back.onrender.com/boards/";
 
 // Configurar axios para incluir o token de autorização
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   return {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -14,9 +14,9 @@ const getAuthHeaders = () => {
 
 class BoardService {
   async create(title: string, description?: string) {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     const userId = this.getUserIdFromToken(token);
-    
+
     return axios.post(
       API_URL,
       {
@@ -52,14 +52,14 @@ class BoardService {
   }
 
   private getUserIdFromToken(token: string | null): string {
-    if (!token) return '';
-    
+    if (!token) return "";
+
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.sub || '';
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload.sub || "";
     } catch (error) {
-      console.error('Error parsing token:', error);
-      return '';
+      console.error("Error parsing token:", error);
+      return "";
     }
   }
 }

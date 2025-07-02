@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios from "axios";
 
-const API_URL = 'http://localhost:3000/tasks/';
+const API_URL = "https://nest-task-back.onrender.com/tasks/";
 
 // Configurar axios para incluir o token de autorização
 const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   return {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -17,7 +17,7 @@ class TaskService {
     title: string,
     boardId: string,
     description?: string,
-    status: string = 'TODO',
+    status: string = "TODO",
     order: number = 0,
     dueDate?: Date,
     completed: boolean = false
